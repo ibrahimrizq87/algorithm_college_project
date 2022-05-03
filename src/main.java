@@ -1,12 +1,5 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-/*
- *  			N
- *  		W		E
- *  			S
- */
 
 class Node {
     int x, y, name;
@@ -88,7 +81,7 @@ class Boundry {
         );
 
     }
-    boolean inIt(Boundry boundry){
+  /*  boolean inIt(Boundry boundry){
         return(    (boundry.getxMin() >= this.getxMin() && boundry.getxMin() <= this.getxMax()
                 && boundry.getyMin() >= this.getyMin() && boundry.getyMin() <= this.getyMax())
                 &&
@@ -105,7 +98,7 @@ class Boundry {
                         && boundry.getyMax() >= this.getyMin() && boundry.getyMax() <= this.getyMax())
 
         );
-    }
+    }*/
     public boolean inRange(int x, int y) {
         return (x >= this.getxMin() && x <= this.getxMax()
                 && y >= this.getyMin() && y <= this.getyMax());
@@ -119,7 +112,7 @@ class Boundry {
 }
 
  class QuadTree {
-    final int MAX_CAPACITY = 4;
+    int MAX_CAPACITY = 4;
     int level = 0;
     List<Node> nodes;
     QuadTree northWest = null;
@@ -183,6 +176,16 @@ class Boundry {
 
         Node node = new Node(x, y, value);
         if (nodes.size() < MAX_CAPACITY) {
+            for (Node node2 : this.nodes) {
+            if ((node2.x == node.x&& node2.y == node.y) &&(node2.name== node.name) ){
+                return;
+            }else if(node2.x == node.x&& node2.y == node.y)
+            {
+                nodes.add(node);
+                this.MAX_CAPACITY++;
+                return;
+            }
+            }
             nodes.add(node);
             return;
         }
@@ -235,8 +238,8 @@ class main{
     public static void main(String args[]) {
         QuadTree anySpace = new QuadTree(1, new Boundry(0, 0, 1000, 1000));
         anySpace.insert(100, 100, 1);
-        anySpace.insert(100, 100, 1);
-        anySpace.insert(100, 100, 1);
+        anySpace.insert(100, 100, 5);
+        anySpace.insert(100, 100, 6);
         anySpace.insert(700, 600, 1);
         anySpace.insert(800, 600, 1);
         anySpace.insert(900, 600, 1);
@@ -247,11 +250,11 @@ class main{
         anySpace.insert(550, 650, 1);
         anySpace.insert(555, 655, 1);
         anySpace.insert(560, 660, 1);
-        for (Node node : anySpace.query(new Boundry(0,0,10,10))) {
+        for (Node node : anySpace.query(new Boundry(0,0,600,600))) {
             System.out.printf(" \n\t  x=%d y=%d", node.x, node.y);
         }
 
-//QuadTree.dfs(anySpace);
+QuadTree.dfs(anySpace);
     /*  for (Node node : anySpace.query(new Boundry(0,0,500,500))) {
             System.out.printf(" \n\t  x=%d y=%d", node.x, node.y);
         }
