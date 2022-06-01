@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,7 +134,7 @@ class Boundry {
 }
 
  class QuadTree {
-    int MAX_CAPACITY = 4;
+    int MAX_CAPACITY = 3;
     int level = 0;
      int numberofDubPoints=0;
     List<Node> nodes;
@@ -151,19 +155,33 @@ class Boundry {
 
     /* Traveling the Graph using Depth First Search*/
     static void dfs(QuadTree tree) {
+        String space="";
         if (tree == null)
             return;
+        for (int i=0;i<tree.level-1;i++){
+            space+="  ";
+        }
+        System.out.printf("\n"+space+"Node at %d, %d, %d, %d:",
+                 tree.boundry.getxMin(), tree.boundry.getyMin(),
+                tree.boundry.getxMax(), tree.boundry.getyMax());
 
-        System.out.printf("\nLevel = %d [X1=%d Y1=%d] \t[X2=%d Y2=%d] \t[num=%d]",
-                tree.level, tree.boundry.getxMin(), tree.boundry.getyMin(),
-                tree.boundry.getxMax(), tree.boundry.getyMax(), tree.numberofDubPoints);
+        if(tree.isDivided){
+
+            System.out.printf(" Internal");
+        }
 
         for (Node node : tree.nodes) {
-            System.out.printf(" \n\t  x=%d y=%d", node.x, node.y);
+            System.out.printf("\n");
+
+            System.out.printf(space+"("+node.name+", %d, %d)", node.x, node.y);
+
         }
+
         if (tree.nodes.size() == 0) {
-            System.out.printf(" \n\t  Leaf Node.");
+            System.out.printf(" Empty");
+
         }
+
         dfs(tree.northWest);
         dfs(tree.northEast);
         dfs(tree.southWest);
@@ -459,15 +477,20 @@ int xValue=(this.boundry.getxMax()-this.boundry.getxMin())/2;
     }
 
     void insert(int x, int y, String value) {
-        if (!this.boundry.inRange(x, y)) {
+        if (!this.boundry.inRange(x, y)|| (!Character.isAlphabetic( value.charAt(0) )&& value.charAt(0)!= '_')) {
+            System.out.printf("Point REJECTED: ("+value+", %d, %d)\n",x,y);
             return;
         }
 
         Node node = new Node(x, y, value);
         if (nodes.size() < MAX_CAPACITY) {
             for (Node node2 : this.nodes) {
-            if ((node2.x == node.x&& node2.y == node.y) &&(node2.name== node.name) ){
+            if ((node2.x == node.x&& node2.y == node.y)
+                    &&(node2.name== node.name)
+            ){
+                System.out.printf("Point REJECTED: ("+value+", %d, %d)\n",x,y);
                 return;
+
             }else if(node2.x == node.x&& node2.y == node.y)
             {
                 node.isDublicated=true;
@@ -476,6 +499,7 @@ int xValue=(this.boundry.getxMax()-this.boundry.getxMin())/2;
                 nodes.add(node);
                 this.MAX_CAPACITY++;
                 this.numberofDubPoints++;
+
                 return;
             }
             }
@@ -499,7 +523,7 @@ int xValue=(this.boundry.getxMax()-this.boundry.getxMin())/2;
                 else if (this.southEast.boundry.inRange(x, y))
                     this.southEast.insert(x, y, value);
                 else
-                    System.out.printf("ERROR : Unhandled partition %d %d", x, y);
+                    System.out.printf("Point REJECTED: ("+value+", %d, %d)\n",x,y);
 
     }
      List<Node> search(String name){
@@ -605,41 +629,116 @@ void dump(){
 }
 
 class main{
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         QuadTree anySpace = new QuadTree(1, new Boundry(0, 0, 1000, 1000));
-        anySpace.insert(101, 100, "1");
-        anySpace.insert(100, 101, "2");
-        anySpace.insert(100, 100, "3");
-        anySpace.insert(700, 600, "4");
-        anySpace.insert(800, 600, "5");
-        anySpace.insert(900, 600, "6");
-        anySpace.insert(510, 610, "7");
-        anySpace.insert(520, 620, "8");
-        anySpace.insert(530, 630, "9");
-        anySpace.insert(540, 640, "10");
-        anySpace.insert(550, 650, "11");
-        anySpace.insert(555, 655, "12");
-        anySpace.insert(561, 660, "13");
-        anySpace.insert(562, 660, "14");
-        anySpace.insert(563, 660, "15");
-        anySpace.insert(564, 660, "16");
-        anySpace.insert(565, 660, "17");
-        anySpace.insert(566, 660, "18");
-        anySpace.insert(567, 660, "19");
-        anySpace.insert(568, 660, "20");
-        anySpace.insert(569, 660, "21");
-        anySpace.insert(570, 660, "22");
+        anySpace.insert(100, 100, "a");
+        anySpace.insert(100, 101, "b");
+        anySpace.insert(100, -12, "c");
+        anySpace.insert(700, 600, "d");
+        anySpace.insert(800, 600, "d");
+        anySpace.insert(900, 600, "f");
+        anySpace.insert(510, 610, "g");
+        anySpace.insert(520, 620, "h");
+        anySpace.insert(530, 630, "j");
+        anySpace.insert(540, 640, "k");
+        anySpace.insert(550, 650, "l");
+        anySpace.insert(555, 655, "i");
+        anySpace.insert(561, 660, "y");
+        anySpace.insert(562, 660, "_14");
+        anySpace.insert(-50, 660, "name");
+        anySpace.insert(564, 660, "e");
+        anySpace.insert(565, 660, "w");
+        anySpace.insert(566, 660, "e");
+        anySpace.insert(567, 660, "q");
+        anySpace.insert(568, 660, "d");
+        anySpace.insert(569, 660, "rt");
+        anySpace.insert(570, 660, "yuhhg");
 
         anySpace.insert(571, 660, "23");
         anySpace.insert(572, 660, "24");
         anySpace.insert(573, 660, "25");
-
-
-
-
-        anySpace.dump();
+        SkipList list=new SkipList();
+        list.insert("a",100, 1 );
+        list.insert("b",100, 2);
+        list.insert("c",100, 3);
+        list.insert("d",700, 4);
+        list.insert("d",800, 5);
+        list.insert( "f",900, 6);
+        list.insert("g",510, 7);
+        list.insert("h",520, 8);
+        list.insert("j",530, 9);
+        list.insert("k",540, 10);
+        list.insert("l",550, 11);
+        list.insert("o",555, 12);
+        list.insert("p",561, 13);
+        list.insert("y",562, 14);
+        list.insert("t",-50, 15);
+        list.insert("r",564, 16);
+        list.insert("e",565, 17);
         QuadTree.dfs(anySpace);
-/*
+        list.dump();
+
+  /*
+
+*/
+
+        // anySpace.dump();
+       // QuadTree.dfs(anySpace);
+
+
+
+        /*
+        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test1.txt");
+
+
+        BufferedReader br
+                = new BufferedReader(new FileReader(file));
+String st;
+        while ((st = br.readLine()) != null){
+
+        String[] splitStr = st.split("\\s+");
+
+        for(int i=0;i<splitStr.length;i++){
+            switch (splitStr[i]){
+                case "insert":
+                    System.out.println("insert"+splitStr[i+1]+splitStr[i+2]+splitStr[i+3]);
+                    break;
+                case "duplicates":
+                    System.out.println("duplicates");
+                    break;
+                case "dump":
+                    System.out.println("dump");
+                    break;
+                case "search":
+                    System.out.println("search"+splitStr[i+1]);
+                    break;
+                case "remove":
+                    boolean t=true;
+                    try {
+                        int d = Integer.parseInt(splitStr[i+1]);
+                    } catch (NumberFormatException nfe) {
+                        t= false;
+                    }
+
+
+                    if (t ){
+                        System.out.println("remove point by value"+splitStr[i+1]+splitStr[i+2]);
+                    }else{
+                        System.out.println("remove point by name"+splitStr[i+1]);
+                    }
+                    break;
+                case "regionsearch":
+                    System.out.println("regionsearch"+splitStr[i+1]+splitStr[i+2]+splitStr[i+3]+splitStr[i+4]);
+                    break;
+
+
+            }
+        }
+
+        }
+
+
+
 QuadTree.dfs(anySpace);
  for (Node node : anySpace.regionsearch(500,500,1000,1000)) {
             System.out.printf(" \n\t  x=%d y=%d", node.x, node.y);
