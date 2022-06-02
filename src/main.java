@@ -122,89 +122,89 @@ class Boundry {
 }
 
  class QuadTree {
-    int MAX_CAPACITY = 3;
-    int level = 0;
-     int numberofDubPoints=0;
-    List<Node> nodes;
-    QuadTree northWest = null;
-    QuadTree northEast = null;
-    QuadTree southWest = null;
-    QuadTree southEast = null;
-    Boundry boundry;
-    boolean isDivided =false;
-     static int visitedNodes=0;
+     int MAX_CAPACITY = 3;
+     int level = 0;
+     int numberofDubPoints = 0;
+     List<Node> nodes;
+     QuadTree northWest = null;
+     QuadTree northEast = null;
+     QuadTree southWest = null;
+     QuadTree southEast = null;
+     Boundry boundry;
+     boolean isDivided = false;
+     static int visitedNodes = 0;
      int size;
 
      QuadTree(int level, Boundry boundry) {
-        this.level = level;
-size=1;
-        nodes = new ArrayList<Node>();
-        this.boundry = boundry;
-    }
+         this.level = level;
+         size = 1;
+         nodes = new ArrayList<Node>();
+         this.boundry = boundry;
+     }
 
-    /* Traveling the Graph using Depth First Search*/
-    static void dfs(QuadTree tree) {
+     /* Traveling the Graph using Depth First Search*/
+     static void dfs(QuadTree tree) {
 
-        String space="";
-        if (tree == null)
-            return;
-        for (int i=0;i<tree.level-1;i++){
-            space+="  ";
-        }
-        System.out.printf("\n"+space+"Node at %d, %d, %d, %d: ",
+         String space = "";
+         if (tree == null)
+             return;
+         for (int i = 0; i < tree.level - 1; i++) {
+             space += "  ";
+         }
+         System.out.printf("\n" + space + "Node at %d, %d, %d: ",
                  tree.boundry.getxMin(), tree.boundry.getyMin(),
-                tree.boundry.getxMax(), tree.boundry.getyMax());
+                 tree.boundry.getxMax()-tree.boundry.getxMin());
 
-        if(tree.isDivided){
+         if (tree.isDivided) {
 
-            System.out.printf("Internal");
+             System.out.printf("Internal");
 
-        }
+         }
 
-        for (Node node : tree.nodes) {
-            System.out.printf("\n");
+         for (Node node : tree.nodes) {
+             System.out.printf("\n");
 
-            System.out.printf(space+"("+node.name+", %d, %d)", node.x, node.y);
+             System.out.printf(space + "(" + node.name + ", %d, %d)", node.x, node.y);
 
-        }
+         }
 
-        if (tree.nodes.size() == 0) {
-            System.out.printf("Empty");
+         if (tree.nodes.size() == 0 && !tree.isDivided) {
+             System.out.printf("Empty");
 
-        }
+         }
 
-        dfs(tree.northWest);
-        dfs(tree.northEast);
-        dfs(tree.southWest);
-        dfs(tree.southEast);
-        //System.out.printf("QuadTree Size: %d QuadTree Nodes Printed.",size);
+         dfs(tree.northWest);
+         dfs(tree.northEast);
+         dfs(tree.southWest);
+         dfs(tree.southEast);
+         //System.out.printf("QuadTree Size: %d QuadTree Nodes Printed.",size);
 
-    }
+     }
 
-    void rearrange(QuadTree tree){
-        List<Node> removed= new ArrayList<>();
-        if(tree.northWest!= null && tree.northWest.nodes.size()>0){
-            for (Node node : tree.northWest.nodes){
-                if (tree.MAX_CAPACITY>tree.nodes.size()){
-                    tree.nodes.add(node);
-                    if (node.isDublicated && tree.northWest.numberofDubPoints>0){
-                        tree.MAX_CAPACITY ++;
-                        tree.numberofDubPoints++;
-                        tree.northWest.numberofDubPoints --;
-                        tree.northWest.MAX_CAPACITY --;
-                    }
-                    removed.add(node);
-                    //tree.northWest.nodes.remove(node);
+     void rearrange(QuadTree tree) {
+         List<Node> removed = new ArrayList<>();
+         if (tree.northWest != null && tree.northWest.nodes.size() > 0) {
+             for (Node node : tree.northWest.nodes) {
+                 if (tree.MAX_CAPACITY > tree.nodes.size()) {
+                     tree.nodes.add(node);
+                     if (node.isDublicated && tree.northWest.numberofDubPoints > 0) {
+                         tree.MAX_CAPACITY++;
+                         tree.numberofDubPoints++;
+                         tree.northWest.numberofDubPoints--;
+                         tree.northWest.MAX_CAPACITY--;
+                     }
+                     removed.add(node);
+                     //tree.northWest.nodes.remove(node);
 
-                }
-            }
-            for (Node node : removed){
-                tree.northWest.nodes.remove(node);
+                 }
+             }
+             for (Node node : removed) {
+                 tree.northWest.nodes.remove(node);
 
-            }
+             }
 
-            //tree.MAX_CAPACITY += numberofDubPoints-1;
-            //tree.northWest.MAX_CAPACITY -=tree.northWest.numberofDubPoints+1;
+             //tree.MAX_CAPACITY += numberofDubPoints-1;
+             //tree.northWest.MAX_CAPACITY -=tree.northWest.numberofDubPoints+1;
       /*  if(tree.southEast.nodes.size()==0
         &&tree.southWest.nodes.size()==0
         &&tree.northEast.nodes.size()==0
@@ -220,32 +220,32 @@ size=1;
                 tree.northWest.numberofDubPoints ++;
                 tree.northWest.MAX_CAPACITY ++;
             }*/
-            rearrange(tree.northWest);
+             rearrange(tree.northWest);
 
-            return;
-        }else if(tree.northEast!= null && tree.northEast.nodes.size()>0){
-            for (Node node : tree.northEast.nodes){
-                if (tree.MAX_CAPACITY>tree.nodes.size()){
-                    tree.nodes.add(node);
-                    if (node.isDublicated && tree.northEast.numberofDubPoints>0){
-                        tree.MAX_CAPACITY ++;
-                        tree.numberofDubPoints++;
+             return;
+         } else if (tree.northEast != null && tree.northEast.nodes.size() > 0) {
+             for (Node node : tree.northEast.nodes) {
+                 if (tree.MAX_CAPACITY > tree.nodes.size()) {
+                     tree.nodes.add(node);
+                     if (node.isDublicated && tree.northEast.numberofDubPoints > 0) {
+                         tree.MAX_CAPACITY++;
+                         tree.numberofDubPoints++;
 
-                        tree.northEast.numberofDubPoints --;
-                        tree.northEast.MAX_CAPACITY --;
-                    }
-                    removed.add(node);
-                    //tree.northEast.nodes.remove(node);
+                         tree.northEast.numberofDubPoints--;
+                         tree.northEast.MAX_CAPACITY--;
+                     }
+                     removed.add(node);
+                     //tree.northEast.nodes.remove(node);
 
-                }
+                 }
 
-            }
-            for (Node node : removed){
-                tree.northEast.nodes.remove(node);
+             }
+             for (Node node : removed) {
+                 tree.northEast.nodes.remove(node);
 
-            }
-            //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
-            //tree.northEast.MAX_CAPACITY -=tree.northWest.numberofDubPoints+1;
+             }
+             //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
+             //tree.northEast.MAX_CAPACITY -=tree.northWest.numberofDubPoints+1;
           /*  if(tree.southEast.nodes.size()==0
                     &&tree.southWest.nodes.size()==0
                     &&tree.northEast.nodes.size()==0
@@ -262,32 +262,32 @@ size=1;
                 tree.northEast.numberofDubPoints ++;
                 tree.northEast.MAX_CAPACITY ++;
             }*/
-            rearrange(tree.northEast);
+             rearrange(tree.northEast);
 
-            return;
-        }else if(tree.southWest!= null && tree.southWest.nodes.size()>0){
-            for (Node node : tree.southWest.nodes){
-                if (tree.MAX_CAPACITY>tree.nodes.size()){
-                    tree.nodes.add(node);
-                    if (node.isDublicated && tree.southWest.numberofDubPoints>0){
-                        tree.MAX_CAPACITY ++;
+             return;
+         } else if (tree.southWest != null && tree.southWest.nodes.size() > 0) {
+             for (Node node : tree.southWest.nodes) {
+                 if (tree.MAX_CAPACITY > tree.nodes.size()) {
+                     tree.nodes.add(node);
+                     if (node.isDublicated && tree.southWest.numberofDubPoints > 0) {
+                         tree.MAX_CAPACITY++;
 
-                        tree.numberofDubPoints++;
+                         tree.numberofDubPoints++;
 
-                        tree.southWest.numberofDubPoints --;
-                        tree.southWest.MAX_CAPACITY --;
-                    }
-                    removed.add(node);
-                    //tree.southWest.nodes.remove(node);
-                }
-            }
-            for (Node nod : removed){
-                tree.southWest.nodes.remove(nod);
+                         tree.southWest.numberofDubPoints--;
+                         tree.southWest.MAX_CAPACITY--;
+                     }
+                     removed.add(node);
+                     //tree.southWest.nodes.remove(node);
+                 }
+             }
+             for (Node nod : removed) {
+                 tree.southWest.nodes.remove(nod);
 
-            }
+             }
 
-            //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
-            //tree.southWest.MAX_CAPACITY -=tree.southWest.numberofDubPoints+1;
+             //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
+             //tree.southWest.MAX_CAPACITY -=tree.southWest.numberofDubPoints+1;
             /*if(tree.southEast.nodes.size()==0
                     &&tree.southWest.nodes.size()==0
                     &&tree.northEast.nodes.size()==0
@@ -299,33 +299,33 @@ size=1;
                 tree.southWest=null;
 
             }*/
-            rearrange(tree.southWest);
+             rearrange(tree.southWest);
 
-            return;
-        }else if(tree.southEast!= null && tree.southEast.nodes.size()>0){
-            for (Node node : tree.southEast.nodes){
-                if (tree.MAX_CAPACITY>tree.nodes.size()){
-                    tree.nodes.add(node);
-                    if (node.isDublicated && tree.southEast.numberofDubPoints>0){
-                        tree.MAX_CAPACITY ++;
+             return;
+         } else if (tree.southEast != null && tree.southEast.nodes.size() > 0) {
+             for (Node node : tree.southEast.nodes) {
+                 if (tree.MAX_CAPACITY > tree.nodes.size()) {
+                     tree.nodes.add(node);
+                     if (node.isDublicated && tree.southEast.numberofDubPoints > 0) {
+                         tree.MAX_CAPACITY++;
 
-                        tree.numberofDubPoints++;
+                         tree.numberofDubPoints++;
 
-                        tree.southEast.numberofDubPoints --;
-                        tree.southEast.MAX_CAPACITY --;
-                    }
-                    removed.add(node);
-                    //tree.southEast.nodes.remove(node);
+                         tree.southEast.numberofDubPoints--;
+                         tree.southEast.MAX_CAPACITY--;
+                     }
+                     removed.add(node);
+                     //tree.southEast.nodes.remove(node);
 
-                }
-            }
-            for (Node nod : removed){
-                tree.southEast.nodes.remove(nod);
+                 }
+             }
+             for (Node nod : removed) {
+                 tree.southEast.nodes.remove(nod);
 
-            }
+             }
 
-            //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
-            //tree.southEast.MAX_CAPACITY -=tree.southEast.numberofDubPoints+1;
+             //tree.MAX_CAPACITY +=tree.numberofDubPoints-1;
+             //tree.southEast.MAX_CAPACITY -=tree.southEast.numberofDubPoints+1;
             /*if(tree.southEast.nodes.size()==0
                     &&tree.southWest.nodes.size()==0
                     &&tree.northEast.nodes.size()==0
@@ -337,65 +337,110 @@ size=1;
                 tree.southWest=null;
 
             }*/
-            rearrange(tree.southEast);
+             rearrange(tree.southEast);
 
-            return;
-        }
+             return;
+         }
 
-    }
-void remove(String name){
-    boolean isDeleted=false;
-    for (Node node : this.nodes) {
-        //if (  name.equals(node.name))
-        if (name.equals(node.name)) {
-            if (this.nodes.size() == 1 ) {
-                this.nodes.remove(node);
-                if (node.isDublicated ) {
-                    this.MAX_CAPACITY--;
-                    this.numberofDubPoints--;
-                }
-                return;
+     }
 
-            } else {
+     void remove(String name) {
+         boolean isDeleted = false;
+         for (Node node : this.nodes) {
+             //if (  name.equals(node.name))
+             if (name.equals(node.name)) {
+                 if (this.nodes.size() == 1) {
+                     this.nodes.remove(node);
+                     if (node.isDublicated) {
+                         this.MAX_CAPACITY--;
+                         this.numberofDubPoints--;
+                     }
+                     return;
 
-                if (node.isDublicated && this.numberofDubPoints>0) {
+                 } else {
 
-                    this.MAX_CAPACITY--;
-                    this.numberofDubPoints--;
-                    this.nodes.remove(node);
+                     if (node.isDublicated && this.numberofDubPoints > 0) {
 
-                    isDeleted=true;
-                    return;
+                         this.MAX_CAPACITY--;
+                         this.numberofDubPoints--;
+                         this.nodes.remove(node);
+
+                         isDeleted = true;
+                         return;
 
 
-                }
+                     }
 
-                this.nodes.remove(node);
+                     this.nodes.remove(node);
 
-                rearrange(this);
+                     rearrange(this);
 
-                return;
-            }
-        } else if (isDivided && !isDeleted ) {
+                     return;
+                 }
+             } else if (isDivided && !isDeleted) {
 
-            this.northWest.remove(name);
-            isDeleted=true;
-            this.northEast.remove(name);
-            isDeleted=true;
-            this.southWest.remove(name);
-            isDeleted=true;
-            this.southEast.remove(name);
-        }
-    }
-}
+                 this.northWest.remove(name);
+                 isDeleted = true;
+                 this.northEast.remove(name);
+                 isDeleted = true;
+                 this.southWest.remove(name);
+                 isDeleted = true;
+                 this.southEast.remove(name);
+             }
+         }
+     }
 
-     void remove(int x,int y){
-         if (this.boundry.inRange(x,y)) {
+     void remove(int x, int y) {
+         if (this.boundry.inRange(x, y)) {
+             if (this.isDivided){
+                 this.northWest.remove(x, y);
+                 this.northEast.remove(x, y);
+                 this.southWest.remove(x, y);
+                 this.southEast.remove(x, y);
+             }else {
+                 for (Node node : this.nodes) {
+                     if (x == node.x && node.y == y) {
+                         if (this.nodes.size() == 1) {
+                             this.nodes.remove(node);
+                             if (node.isDublicated) {
+                                 this.MAX_CAPACITY--;
+                                 this.numberofDubPoints--;
+                             }
+                             return;
+
+                         } else {
+
+                             if (this.numberofDubPoints > 0) {
+
+                                 this.MAX_CAPACITY--;
+                                 this.numberofDubPoints--;
+                                 this.nodes.remove(node);
+
+                                 return;
+
+
+                             }
+
+                             this.nodes.remove(node);
+
+                             //rearrange(this);
+
+                             return;
+
+                         }
+                     } else {
+                         return;
+                     }
+
+
+                 }}}}
+     void removeOLD(int x, int y) {
+         if (this.boundry.inRange(x, y)) {
 
              boolean isDeleted = false;
              for (Node node : this.nodes) {
                  //if (  name.equals(node.name))
-                 if (x == node.x&& node.y==y) {
+                 if (x == node.x && node.y == y) {
                      if (this.nodes.size() == 1) {
                          this.nodes.remove(node);
                          if (node.isDublicated) {
@@ -426,16 +471,22 @@ void remove(String name){
                      }
                  } else if (isDivided && !isDeleted) {
 
-                     this.northWest.remove(x,y);
+                     this.northWest.remove(x, y);
                      isDeleted = true;
-                     this.northEast.remove(x,y);
+                     this.northEast.remove(x, y);
                      isDeleted = true;
-                     this.southWest.remove(x,y);
+                     this.southWest.remove(x, y);
                      isDeleted = true;
-                     this.southEast.remove(x,y);
+                     this.southEast.remove(x, y);
                  }
              }
-         }     }
+         }
+     }
+
+
+
+
+
 
      /*void remove(int x,int y) {
  if (this.boundry.inRange(x,y)){
@@ -488,32 +539,37 @@ void remove(String name){
          }
      }
 */
-    void split() {
-        size=size*4;
-int xValue=(this.boundry.getxMax()-this.boundry.getxMin())/2;
-        int yValue=(this.boundry.getyMax()-this.boundry.getyMin())/2;
+     void split() {
+         size = size * 4;
+         int xValue = (this.boundry.getxMax() - this.boundry.getxMin()) / 2;
+         int yValue = (this.boundry.getyMax() - this.boundry.getyMin()) / 2;
+         int xMin=this.boundry.getxMin();
+         int xMax=this.boundry.getxMax();
+         int yMin=this.boundry.getyMin();
+         int yMax=this.boundry.getyMax();
 
-        northWest = new QuadTree(this.level + 1, new Boundry(
-                this.boundry.getxMin(),
-                this.boundry.getyMin()+yValue,
-                this.boundry.getxMin()+xValue,
-                this.boundry.getyMax()));
-        northEast = new QuadTree(this.level + 1, new Boundry(
-                this.boundry.getyMin()+xValue,
-                this.boundry.getyMin()+yValue,
-                this.boundry.getxMax(),
-                this.boundry.getyMax()));
 
-        southWest = new QuadTree(this.level + 1, new Boundry(
-                this.boundry.getxMin(),
-                this.boundry.getyMin(),
-                this.boundry.getyMin()+xValue,
-                this.boundry.getyMin()+yValue));
-        southEast = new QuadTree(this.level + 1, new Boundry(
-                this.boundry.getyMin()+xValue,
-                this.boundry.getyMin(),
-                this.boundry.getxMax(),
-                this.boundry.getyMin()+yValue));
+         northWest = new QuadTree(this.level + 1, new Boundry(
+                 xMin,
+                 yMin + yValue,
+                 xMin + xValue,
+                 yMax));
+         northEast = new QuadTree(this.level + 1, new Boundry(
+                 xMin + xValue,
+                 yMin + yValue,
+                 xMax,
+                 yMax));
+
+         southWest = new QuadTree(this.level + 1, new Boundry(
+                 xMin,
+                 yMin,
+                 xMin + xValue,
+                 yMin + yValue));
+         southEast = new QuadTree(this.level + 1, new Boundry(
+                 xMin + xValue,
+                 yMin,
+                 xMax,
+                 yMin + yValue));
 
 
        /* int xOffset = this.boundry.getxMin()
@@ -532,57 +588,131 @@ int xValue=(this.boundry.getxMax()-this.boundry.getxMin())/2;
         southEast = new QuadTree(this.level + 1, new Boundry(xOffset, yOffset,
                 this.boundry.getxMax(), this.boundry.getyMax()));
 */
-    }
+     }
 
-    void insert(int x, int y, String value) {
-        if (!this.boundry.inRange(x, y)) {
-            return;
-        }
+     void insertOLD(int x, int y, String value) {
+         if (!this.boundry.inRange(x, y)) {
+             return;
+         }
 
-        Node node = new Node(x, y, value);
-        if (nodes.size() < MAX_CAPACITY) {
-            for (Node node2 : this.nodes) {
-            if ((node2.x == node.x&& node2.y == node.y)
-                    &&(node2.name== node.name)
-            ){
+         Node node = new Node(x, y, value);
+         if (nodes.size() < MAX_CAPACITY) {
+             for (Node node2 : this.nodes) {
+                 if ((node2.x == node.x && node2.y == node.y)
+                         && (node2.name == node.name)
+                 ) {
 
-                return;
+                     return;
 
-            }else if(node2.x == node.x&& node2.y == node.y)
-            {
-                node.isDublicated=true;
-                node2.isDublicated=true;
+                 } else if (node2.x == node.x && node2.y == node.y) {
+                     node.isDublicated = true;
+                     node2.isDublicated = true;
 
-                nodes.add(node);
-                this.MAX_CAPACITY++;
-                this.numberofDubPoints++;
+                     nodes.add(node);
+                     this.MAX_CAPACITY++;
+                     this.numberofDubPoints++;
 
-                return;
-            }
-            }
-            nodes.add(node);
-            return;
-        }
-        // Exceeded the capacity so split it in FOUR
-        if (!this.isDivided ) {
-            split();
-            isDivided = true;
-        }
- // Check coordinates belongs to which partition
+                     return;
+                 }
+             }
+             nodes.add(node);
+             return;
+         }
+         // Exceeded the capacity so split it in FOUR
+         if (!this.isDivided) {
+             split();
+             isDivided = true;
+         }
 
 
-                if (this.northWest.boundry.inRange(x, y))
-                    this.northWest.insert(x, y, value);
-                else if (this.northEast.boundry.inRange(x, y))
-                    this.northEast.insert(x, y, value);
-                else if (this.southWest.boundry.inRange(x, y))
-                    this.southWest.insert(x, y, value);
-                else if (this.southEast.boundry.inRange(x, y))
-                    this.southEast.insert(x, y, value);
-                else
-                    System.out.printf("Point REJECTED: ("+value+", %d, %d)\n",x,y);
+         if (this.northWest.boundry.inRange(x, y))
+             this.northWest.insert(x, y, value);
+         else if (this.northEast.boundry.inRange(x, y))
+             this.northEast.insert(x, y, value);
+         else if (this.southWest.boundry.inRange(x, y))
+             this.southWest.insert(x, y, value);
+         else if (this.southEast.boundry.inRange(x, y))
+             this.southEast.insert(x, y, value);
+         else
+             System.out.printf("Point REJECTED: (" + value + ", %d, %d)\n", x, y);
 
-    }
+     }
+
+     void insert(int x, int y, String value) {
+         if (!this.boundry.inRange(x, y)) {
+             return;
+         }
+
+         Node node = new Node(x, y, value);
+         if (!this.isDivided) {
+             //if (nodes.size() < MAX_CAPACITY) {
+             if (nodes.size() < MAX_CAPACITY) {
+             for (Node node2 : this.nodes) {
+                 if ((node2.x == node.x && node2.y == node.y)
+                         && (node2.name == node.name)
+                 ) {
+
+                     return;
+
+                 } else if (node2.x == node.x && node2.y == node.y) {
+                     node.isDublicated = true;
+                     node2.isDublicated = true;
+
+                     nodes.add(node);
+                     this.MAX_CAPACITY++;
+                     this.numberofDubPoints++;
+
+                     return;
+                 }
+             }
+             nodes.add(node);
+             return;
+             }
+             else{
+                 split();
+
+                 for (Node nod : this.nodes){
+                     if (this.northWest.boundry.inRange(nod.x, nod.y))
+                         this.northWest.insert(nod.x, nod.y, nod.name);
+                     else if (this.northEast.boundry.inRange(nod.x, nod.y))
+                         this.northEast.insert(nod.x, nod.y, nod.name);
+                     else if (this.southWest.boundry.inRange(nod.x, nod.y))
+                         this.southWest.insert(nod.x, nod.y, nod.name);
+                     else if (this.southEast.boundry.inRange(nod.x, nod.y))
+                         this.southEast.insert(nod.x, nod.y, nod.name);
+
+                 }
+                 if (this.northWest.boundry.inRange(x,y))
+                     this.northWest.insert(x, y,value);
+                 else if (this.northEast.boundry.inRange(x, y))
+                     this.northEast.insert(x, y, value);
+                 else if (this.southWest.boundry.inRange(x, y))
+                     this.southWest.insert(x, y, value);
+                 else if (this.southEast.boundry.inRange(x, y))
+                     this.southEast.insert(x, y, value);
+                 isDivided=true;
+                 nodes.removeAll(nodes);
+             }
+         } else {
+
+             if (this.northWest.boundry.inRange(x, y))
+                 this.northWest.insert(x, y, value);
+             else if (this.northEast.boundry.inRange(x, y))
+                 this.northEast.insert(x, y, value);
+             else if (this.southWest.boundry.inRange(x, y))
+                 this.southWest.insert(x, y, value);
+             else if (this.southEast.boundry.inRange(x, y))
+                 this.southEast.insert(x, y, value);
+             else
+                 System.out.printf("Point REJECTED: ("+value+", %d, %d)\n",x,y);
+         }
+         this.nodes.removeAll(this.nodes);
+         isDivided = true;
+     }
+
+
+
+
 
 
      List<Node> search(String name){
@@ -727,8 +857,14 @@ class main{
                         break;
                     case "duplicates":
                         System.out.print("\nDuplicate Points:");
+                        Node temp=null;
                         for(Node node:anySpace.duplicates()){
-                            System.out.printf("\n(%d, %d)",node.x,node.y);
+                            if (temp==null||!( temp.x==node.x && temp.y==node.y)){
+                                temp=node;
+                                System.out.printf("\n(%d, %d)",node.x,node.y);
+
+                            }
+
                         }
                         break;
                     case "dump":
@@ -802,10 +938,14 @@ class main{
                         int w=Integer.parseInt(splitStr[i+4]);
 
                         if (x<= h && y<=w){
-                            anySpace.regionsearch(x, y, h, w);
+                           List<Node> found= anySpace.regionsearch(x, y, h, w);
                             System.out.printf("\nPoints Intersecting Region: (%d, %d, %d, %d)",x,y,h,w);
-                            System.out.printf("\n%d QuadTree Nodes Visited",QuadTree.visitedNodes);
+                            for (Node node: found){
+                                System.out.printf("\nPoint Found: ("+node.name+", %d, %d)",node.x,node.y);
 
+                            }
+
+                            System.out.printf("\n%d QuadTree Nodes Visited",QuadTree.visitedNodes);
 
 
                         }else{
