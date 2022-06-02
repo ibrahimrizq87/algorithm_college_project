@@ -42,13 +42,38 @@ class SkipList {
         level = -1;
         size = 0;
     }
+
+    public void removeAt(String name){
+        SkipNode x = head;
+        SkipNode old ;// Dummy header node
+        for (int i = level; i >= 0; i--) {
+            while ((x.forward[i] != null) && (x.forward[i].getName().compareTo(name) < 0))
+            { // go forward
+                x = x.forward[i]; // Go one last step
+
+            }
+        }
+        old=x;
+        x = x.forward[0];
+
+
+        if ((x != null) && (x.getName().compareTo(name) == 0))
+        {
+            System.out.printf("\nPoint ("+x.getName()+", %d, %d) Removed",x.getx(),x.gety());
+            x = x.forward[0];
+            old.forward[0]=x;
+            size --;
+
+        }
+
+    }
     public void dump(){
         System.out.println("\nSkipList Dump:");
         SkipNode x = head;
-        System.out.printf("\n level: %d Value: null",x.forward.length);
+        System.out.printf("level: %d Value: null",x.forward.length);
         while(x.forward[0] != null){
             x=x.forward[0];
-            System.out.printf("\n level: %d Value: ("+x.getName()+", %d, %d)",x.forward.length,x.getx(),x.gety());
+            System.out.printf("\nlevel: %d Value: ("+x.getName()+", %d, %d)",x.forward.length,x.getx(),x.gety());
 
 
         }
@@ -65,7 +90,9 @@ class SkipList {
                 }
     }
             }*/
-        }
+        System.out.printf("\nThe SkipList's Size is: %d",size);
+
+    }
 
     public SkipNode find(String name) {
 
