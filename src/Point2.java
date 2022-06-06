@@ -4,6 +4,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+// On my honor:
+// - I have not used source code obtained from another student,
+// or any other unauthorized source, either modified or unmodified.
+// - All source code and documentation used in my program is
+// either my original work, or was derived by me from the
+// source code published in the textbook for this course.
+// - I have not discussed coding details about this project with
+// anyone other than the my partner, instructor, ACM/UPE tutors
+// or the TAs assigned to this course.
+// I understand that I may discuss the concepts
+// of this program with other students, and that another student
+// may help me debug my program so long as neither of us writes
+// anything during the discussion or modifies any computer file
+// during the discussion. I have violated neither the spirit nor
+// letter of this restriction
 
 class Point2 {
     public static void main(String args[]) throws IOException {
@@ -11,9 +26,10 @@ class Point2 {
         QuadTree anySpace = new QuadTree(1,boundry,null );
         SkipList list=new SkipList();
 
+        String fName = args[0];
 
 //        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test2.txt");
-        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test1.txt");
+        File file = new File(fName);
 
 
         BufferedReader br
@@ -23,7 +39,7 @@ class Point2 {
 
             String[] splitStr = st.split("\\s+");
 
-            for(int i=0;i<splitStr.length;i++){
+               for(int i=0;i<splitStr.length;i++){
                 int x;
                 int y;
                 String name;
