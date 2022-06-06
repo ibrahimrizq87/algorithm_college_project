@@ -2,19 +2,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
-class main{
+class Point2 {
     public static void main(String args[]) throws IOException {
         Boundry boundry=new Boundry(0, 0, 1024, 1024);
-        QuadTree anySpace = new QuadTree(1,boundry );
+        QuadTree anySpace = new QuadTree(1,boundry,null );
         SkipList list=new SkipList();
 
-QuadTree.visitedNodes=1;
-        QuadTree.size=1;
-        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test2.txt");
+
+//        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test2.txt");
+        File file = new File("F:\\college\\third_year\\second semester\\algorithms\\project test cases\\P2test1.txt");
 
 
         BufferedReader br
@@ -37,35 +36,45 @@ QuadTree.visitedNodes=1;
                             anySpace.insert(x,y,name);
                             list.insert(name,x,y);
 
-                            System.out.printf("Point Inserted: ("+name+", %d, %d)\n",x,y);
+                            System.out.println("Point Inserted: ("+name+", "+x+", "+y+")");
                         }else{
-                            System.out.printf("Point REJECTED: ("+name+", %d, %d)\n",x,y);
+                            System.out.println("Point REJECTED: ("+name+", "+x+", "+y+")");
+
                         }
                         break;
                     case "duplicates":
-                        System.out.print("\nDuplicate Points:");
+                        System.out.println("Duplicate Points:");
                         Node temp=null;
                         for(Node node:anySpace.duplicates()){
                             if (temp==null||!( temp.x==node.x && temp.y==node.y)){
                                 temp=node;
-                                System.out.printf("\n(%d, %d)",node.x,node.y);
+                                System.out.println("("+node.x+", "+node.y+")");
+                                //System.out.printf("\n(%d, %d)",node.x,node.y);
 
                             }
 
                         }
                         break;
                     case "dump":
+                        QuadTree.size=1;
                         list.dump();
-                        System.out.print("\nQuadTree Dump:");
+                        //System.out.print("\nQuadTree Dump:");
+                        System.out.println("QuadTree Dump:");
                         QuadTree.dfs(anySpace);
-                        System.out.printf("\nQuadTree Size: %d QuadTree Nodes Printed.",QuadTree.visitedNodes);
+                        //System.out.printf("\nQuadTree Size: %d QuadTree Nodes Printed.",QuadTree.size);
+                        System.out.println("QuadTree Size: "+QuadTree.size+" QuadTree Nodes Printed.");
                         break;
                     case "search":
                         if (list.find(splitStr[i+1])!=null){
-                        System.out.printf("\nPoint Found ("+list.find(splitStr[i+1]).getName()+", %d, %d)"
-                                ,list.find(splitStr[i+1]).getx(),
-                                list.find(splitStr[i+1]).gety());}else{
-                            System.out.println("\nPoint Not Found: "+splitStr[i+1]);
+                            System.out.println("Point Found ("+list.find(splitStr[i+1]).getName()+", "+
+                                            list.find(splitStr[i+1]).getx()
+                                            +", "+list.find(splitStr[i+1]).gety()+")");
+                        //System.out.printf("\nPoint Found ("+list.find(splitStr[i+1]).getName()+", %d, %d)"
+                                //,list.find(splitStr[i+1]).getx(),
+                                //list.find(splitStr[i+1]).gety());
+                        }else{
+//                            System.out.println("\nPoint Not Found: "+splitStr[i+1]);
+                            System.out.println("Point Not Found: "+splitStr[i+1]);
 
                         }
                         break;
@@ -89,10 +98,12 @@ QuadTree.visitedNodes=1;
                                     anySpace.remove(x,y);
                                     list.removeAt(found.name);
                                 }else{
-                                    System.out.printf("\npoint Not Found: (%d, %d)",x,y);
+                                    //System.out.printf("\npoint Not Found: (%d, %d)",x,y);
+                                    System.out.println("point Not Found: ("+x+", "+y+")");
                                 }
                             }else{
-                                System.out.printf("Point Rejected: (%d, %d)",x,y);
+                                //System.out.printf("Point Rejected: (%d, %d)",x,y);
+                                System.out.println("Point Rejected: ("+x+", "+y+")");
 
                             }
 
@@ -126,17 +137,20 @@ QuadTree.visitedNodes=1;
 
                         if (x<= h && y<=w){
                            List<Node> found= anySpace.regionsearch(x, y, h, w);
-                            System.out.printf("\nPoints Intersecting Region: (%d, %d, %d, %d)",x,y,h,w);
+                            System.out.println("Points Intersecting Region: ("+x+", "+y+", "+h+", "+w+")");
                             for (Node node: found){
-                                System.out.printf("\nPoint Found: ("+node.name+", %d, %d)",node.x,node.y);
+                                System.out.println("Point Found: ("+node.name+", "+node.x+", "+node.y+")");
+                                //System.out.printf("\nPoint Found: ("+node.name+", %d, %d)",node.x,node.y);
 
                             }
 
-                            System.out.printf("\n%d QuadTree Nodes Visited",QuadTree.visitedNodes);
+                            System.out.println(QuadTree.visitedNodes+" QuadTree Nodes Visited");
 
 
                         }else{
-                            System.out.printf("\nRectangle Rejected: (%d, %d, %d, %d)",x,y,h,w);
+                            //System.out.printf("Rectangle Rejected: (%d, %d, %d, %d)",x,y,h,w);
+                            System.out.println("Rectangle Rejected: ("+x+", "+y+", "+h+", "+w+")");
+
                         }
                         break;
 

@@ -29,7 +29,7 @@ class SkipList {
 
         if ((x != null) && (x.getName().compareTo(name) == 0))
         {
-            System.out.printf("\nPoint ("+x.getName()+", %d, %d) Removed",x.getx(),x.gety());
+            System.out.println("Point ("+x.getName()+", "+x.getx()+", "+x.gety()+") Removed");
             x = x.forward[0];
             old.forward[0]=x;
             size --;
@@ -38,12 +38,12 @@ class SkipList {
 
     }
     public void dump(){
-        System.out.println("\nSkipList Dump:");
+        System.out.println("SkipList Dump:");
         SkipNode x = head;
-        System.out.printf("level: %d Value: null",x.forward.length);
+        System.out.println("level: "+x.forward.length+" Value: null");
         while(x.forward[0] != null){
             x=x.forward[0];
-            System.out.printf("\nlevel: %d Value: ("+x.getName()+", %d, %d)",x.forward.length,x.getx(),x.gety());
+            System.out.println("level: "+x.forward.length+" Value: ("+x.getName()+", "+x.getx()+", "+x.gety()+")");
 
 
         }
@@ -60,7 +60,7 @@ class SkipList {
                 }
     }
             }*/
-        System.out.printf("\nThe SkipList's Size is: %d",size);
+        System.out.println("The SkipList's Size is: "+size);
 
     }
 

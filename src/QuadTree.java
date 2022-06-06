@@ -14,10 +14,12 @@ class QuadTree {
     boolean isDivided = false;
     static int visitedNodes = 0;
     static int size ;
+    QuadTree parent;
 
 
-    QuadTree(int level, Boundry boundry) {
+    QuadTree(int level, Boundry boundry,QuadTree parent) {
         this.level = level;
+        this.parent=parent;
         nodes = new ArrayList<Node>();
         this.boundry = boundry;
     }
@@ -31,33 +33,63 @@ class QuadTree {
         for (int i = 0; i < tree.level - 1; i++) {
             space += "  ";
         }
-        System.out.printf("\n" + space + "Node at %d, %d, %d: ",
-                tree.boundry.getxMin(), tree.boundry.getyMin(),
-                tree.boundry.getxMax()-tree.boundry.getxMin());
+        System.out.print("" + space + "Node at "+ tree.boundry.getxMin() +", "+tree.boundry.getyMin() +", "+(tree.boundry.getxMax() - tree.boundry.getxMin())+": ");
 
-        if (tree.isDivided) {
 
-            System.out.printf("Internal");
-
-        }
 
         for (Node node : tree.nodes) {
             System.out.printf("\n");
 
-            System.out.printf(space + "(" + node.name + ", %d, %d)", node.x, node.y);
+            System.out.print(space + "(" + node.name + ", "+node.x+", "+node.y+")");
+
+        }
+        if (tree.isDivided) {
+
+            System.out.println("Internal");
+
+        }else if (tree.nodes.size() == 0 ) {
+            System.out.println("Empty");
+
+        }else{
+            System.out.printf("\n");
 
         }
 
-        if (tree.nodes.size() == 0 && !tree.isDivided) {
-            System.out.printf("Empty");
 
-        }
-
+        if (tree.isDivided) {
+            QuadTree.size += 4;
+            dfs(tree.southWest);
+            dfs(tree.southEast);
         dfs(tree.northWest);
         dfs(tree.northEast);
-        dfs(tree.southWest);
-        dfs(tree.southEast);
+    }
 
+    }
+    void merge(QuadTree tree){
+        if (tree.northWest.nodes.size()
+                +tree.northEast.nodes.size()
+                +tree.southWest.nodes.size()
+                +tree.southEast.nodes.size()>=tree.MAX_CAPACITY){
+            List<Node> treeNodes = tree.northWest.nodes;
+            //if (tree.northWest.nodes!= null) treeNodes.addAll(tree.northWest.nodes);
+            if (tree.northEast.nodes!= null) treeNodes.addAll(tree.northEast.nodes);
+            if (tree.southWest.nodes!= null) treeNodes.addAll(tree.southWest.nodes);
+            if (tree.southEast.nodes!= null) treeNodes.addAll(tree.southEast.nodes);
+
+            tree.isDivided=false;
+            for(Node node:treeNodes){
+                tree.insert(node.x,node.y,node.name);
+            }
+            tree.northEast.nodes= null;
+            tree.southWest.nodes= null;
+            tree.southEast.nodes= null;
+            tree.northWest.nodes =null;
+
+            if (tree.parent!= null)merge(tree.parent);
+
+        }else{
+            return;
+        }
     }
 
     void remove(int x, int y) {
@@ -70,10 +102,10 @@ class QuadTree {
             }else {
                 for (Node node : this.nodes) {
                     if (x == node.x && node.y == y) {
-                        if (this.nodes.size() == 1) {
+                      /*  if (this.nodes.size() == 1) {
                             this.nodes.remove(node);
                             if (node.isDublicated) {
-                                this.MAX_CAPACITY--;
+                             //   this.MAX_CAPACITY--;
                                 this.numberofDubPoints--;
                             }
                             return;
@@ -82,30 +114,31 @@ class QuadTree {
 
                             if (this.numberofDubPoints > 0) {
 
-                                this.MAX_CAPACITY--;
+                               // this.MAX_CAPACITY--;
                                 this.numberofDubPoints--;
                                 this.nodes.remove(node);
 
                                 return;
 
 
-                            }
+                            }*/
 
                             this.nodes.remove(node);
 
-                            //rearrange(this);
 
+                             if (this.parent!= null) merge(this.parent);
                             return;
 
                         }
-                    } else {
-                        return;
                     }
 
 
-                }}}}
+                }
+        }else {
+            return;
+        }
+    }
     void split() {
-        QuadTree.size += 4;
         int xValue = (this.boundry.getxMax() - this.boundry.getxMin()) / 2;
         int yValue = (this.boundry.getyMax() - this.boundry.getyMin()) / 2;
         int xMin=this.boundry.getxMin();
@@ -118,23 +151,23 @@ class QuadTree {
                 xMin,
                 yMin + yValue,
                 xMin + xValue,
-                yMax));
+                yMax),this);
         northEast = new QuadTree(this.level + 1, new Boundry(
                 xMin + xValue,
                 yMin + yValue,
                 xMax,
-                yMax));
+                yMax),this);
 
         southWest = new QuadTree(this.level + 1, new Boundry(
                 xMin,
                 yMin,
                 xMin + xValue,
-                yMin + yValue));
+                yMin + yValue),this);
         southEast = new QuadTree(this.level + 1, new Boundry(
                 xMin + xValue,
                 yMin,
                 xMax,
-                yMin + yValue));
+                yMin + yValue),this);
 
 
     }
@@ -159,7 +192,7 @@ class QuadTree {
                         node2.isDublicated = true;
 
                         nodes.add(node);
-                        this.MAX_CAPACITY++;
+                        //this.MAX_CAPACITY++;
                         this.numberofDubPoints++;
 
                         return;
@@ -232,41 +265,48 @@ class QuadTree {
 
     Node  search(int x, int y){
         if (this.boundry.inRange(x,y)){
+
+            if (isDivided) {
+            if (this.northWest.search(x,y)!=null) return this.northWest.search(x,y);
+            if (this.northEast.search(x,y)!=null) return this.northEast.search(x,y);
+            if (this.southWest.search(x,y)!=null) return this.southWest.search(x,y);
+            if (this.southEast.search(x,y)!=null) return this.southWest.search(x,y);
+
+        }else {
             for (Node node : this.nodes) {
                 if(node.x == x && node.y==y){
+
                     return node;
                 }
 
             }
         }
-
-        if (isDivided) {
-            this.northWest.search(x,y);
-            this.northEast.search(x,y);
-            this.southWest.search(x,y);
-            this.southEast.search(x,y);
-
         }
-        return null;
+            return null;
+
     }
     List<Node>  regionsearch(int x,int y,int w,int h){
         Boundry boundry = new Boundry(x,y,w,h);
         List<Node> found = new ArrayList<>();
         QuadTree.visitedNodes ++;
-        if ( !this.boundry.intersect(boundry) ){
-            return found;
-        }else {
-            for (Node node : this.nodes) {
-                if (boundry.inRange(node.x,node.y)){
-                    found.add(node);
-                }
-            }}
 
+if (this.isDivided){
+    if(this.northWest.boundry.intersect(boundry))found.addAll(this.northWest.regionsearch(x,y,w,h));
+    if(this.northEast.boundry.intersect(boundry))found.addAll(this.northEast.regionsearch(x,y,w,h));
+    if(this.southWest.boundry.intersect(boundry))found.addAll(this.southWest.regionsearch(x,y,w,h));
+    if(this.southEast.boundry.intersect(boundry))found.addAll(this.southEast.regionsearch(x,y,w,h));
 
-        if(this.northWest != null)found.addAll(this.northWest.regionsearch(x,y,w,h));
-        if(this.northEast != null)found.addAll(this.northEast.regionsearch(x,y,w,h));
-        if(this.southWest != null)found.addAll(this.southWest.regionsearch(x,y,w,h));
-        if(this.southEast != null)found.addAll(this.southEast.regionsearch(x,y,w,h));
+}else {
+    if ( !this.boundry.intersect(boundry) ){
+        return found;
+    }else {
+        for (Node node : this.nodes) {
+            if (boundry.inRange(node.x,node.y)){
+                found.add(node);
+            }
+        }}
+
+}
 
         return found;
     }
